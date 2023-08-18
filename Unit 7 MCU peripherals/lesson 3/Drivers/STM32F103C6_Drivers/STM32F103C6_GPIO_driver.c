@@ -72,7 +72,7 @@ void MCAL_GPIO_Init (GPIO_TypeDef* GPIOX , GPIO_PinConfig_t* pinconfig)
 	//Port configuration register High (GPIOx_CRH) Configure PINS from 8 >>> 15
 
 	volatile uint32_t* config_register = NULL;
-	config_register = (pinconfig->GPIO_PinNumber < GPIO_PIN8)?GPIOX->CRL:GPIOX->CRH;
+	config_register = (pinconfig->GPIO_PinNumber < GPIO_PIN8)?&GPIOX->CRL:&GPIOX->CRH;
 	uint8_t pin_final_config = 0;
 	uint8_t pin_position = GET_CRLH_Position(pinconfig->GPIO_PinNumber);
 
