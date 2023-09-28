@@ -1,0 +1,45 @@
+#include "I2C_Slave_EEPROM.h"
+
+void EEPROM_INIT(void){
+	I2C_config i2c_cfg;
+
+	i2c_cfg.ACK_Control = I2C_ACK_ENABLE;
+	i2c_cfg.Clock_Speed = I2C_CLCK_SM_100K;
+	i2c_cfg.I2C_Mode = I2C_MODE_I2C;
+	i2c_cfg.P_IRQ_Callback = NULL;
+	i2c_cfg.Stretch_Mode = I2C_STRECH_ENABLE;
+
+	MCAL_I2C_GPIO_Set_Pins(I2C1);
+	MCAL_I2C_Init(I2C1, &i2c_cfg);
+}
+
+
+uint8_t EEPROM_WRITE_DATA(uint32_t EEPROM_ADDRESS , uint8_t* PTXBUFFER , uint8_t DATALEN){
+
+	uint8_t i=0;
+	uint8_t BUFFER[256];
+	BUFFER[0] = (uint8_t)(EEPROM_ADDRESS>>8);   // TO SEND UPPER BYTE
+	BUFFER[1] = (uint8_t)(EEPROM_ADDRESS);		// TO SEND LOWER BYTE
+
+	for( i = 2; i<(DATALEN+2); i++)
+	{
+		BUFFER[i]= PTXBUFFER[i-2];
+	}
+
+	MCAL_I2C_MASTER_TX(I2C1, EEPROM_SLAVE_ADRESS, BUFFER, (DATALEN+2),WITH_STOP, START);
+
+	return 0;
+}
+
+uint8_t EEPROM_READ_DATA( uint32_t EEPROM_ADDRESS , uint8_t* PRXBUFFER , uint8_t DATALEN){
+
+	uint8_t BUFFER[2];
+	BUFFER[0] = (uint8_t)(EEPROM_ADDRESS>>8);   // TO SEND UPPER BYTE
+	BUFFER[1] = (uint8_t)(EEPROM_ADDRESS);		// TO SEND LOWER BYTE
+	//send address
+	MCAL_I2C_MASTER_TX(I2C1, EEPROM_SLAVE_ADRESS, BUFFER, 2, WITH_STOP, START);
+	// Read Data
+	MCAL_I2C_MASTER_RX(I2C1, EEPROM_SLAVE_ADRESS, PRXBUFFER, DATALEN, WITH_STOP, REPEATEDSTART);
+
+	return 0;
+}

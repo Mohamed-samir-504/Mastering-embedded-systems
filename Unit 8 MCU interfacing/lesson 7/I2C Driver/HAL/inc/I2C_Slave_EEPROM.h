@@ -1,0 +1,14 @@
+
+
+#ifndef INC_I2C_SLAVE_EEPROM_H_
+#define INC_I2C_SLAVE_EEPROM_H_
+
+#include "STM32F103C6_I2C_driver.h"
+
+#define EEPROM_SLAVE_ADRESS		0x2A  //DEFAULT FROM DATA SHEET
+
+void EEPROM_INIT(void);
+uint8_t EEPROM_WRITE_DATA(uint32_t EEPROM_ADDRESS , uint8_t* PTXBUFFER , uint8_t DATALEN);
+uint8_t EEPROM_READ_DATA( uint32_t EEPROM_ADDRESS , uint8_t* PRXBUFFER , uint8_t DATALEN);
+
+#endif /* INC_I2C_SLAVE_EEPROM_H_ */
